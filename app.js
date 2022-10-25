@@ -86,7 +86,7 @@ app.post('/login', (req, res) => {
             req.session.user = email;
             res.redirect('conta');
         }else{
-            res.send('login', {message: "Credenciais Incorretas"});
+            res.render('login', {message :'Credenciais Incorretas'});
         }
         
     });
@@ -99,14 +99,17 @@ app.post('/update', (req, res) => {
     let email = req.body.email;
     let senha = req.body.senha;
 
-    let query_Update = ('UPDATE usuarios SET usu_Nome = ?, usu_Senha = ? WHERE usu_Email = ?');
+    let query_Update = ('UPDATE usuarios SET usu_Nome = ?, usu_Senha = ? WHERE usu_Email LIKE ?');
 
-    db.query(query_Update, [username, senha, req.session.user], (err, results) => {
+    db.query(query_Update, [username, senha, [req.session.user]], (err, results) => {
 
         let query_Update2 = ('SELECT * FROM usuarios WHERE usu_Email = ?');
         db.query(query_Update2, [req.session.user], (err, results) => {
-            res.render('/conta', {message:results});
-        });
+            if(err) throw err;
+            res.render('conta', {message:results});
+            }
+            
+        );
 
     });
 
