@@ -61,10 +61,10 @@ app.post('/cadastro', (req, res) => {
                 if(err){
                     res.send(err);
                 }
-                res.send({message: "Cadastro Efetuado"});
+                res.render('index', {message: "Cadastro Efetuado"});
             });
         }else{
-            res.send({message: "Usuario já cadastrado"});
+            res.render('cadastro', {message: "Usuario já cadastrado"});
         }
     });
 
@@ -111,6 +111,17 @@ app.post('/update', (req, res) => {
             
         );
 
+    });
+
+});
+
+app.post('/delete', (req, res) => {
+
+    let query_Delete = ('DELETE FROM usuarios WHERE usu_Email = ?');
+
+    db.query(query_Delete, [req.session.user], (err, results) => {
+        req.session.destroy();
+        res.redirect('/');
     });
 
 });
